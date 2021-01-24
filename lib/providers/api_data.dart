@@ -7,6 +7,10 @@ class API {
     await http.post('https://learning-project-a9400-default-rtdb.firebaseio.com/$database.json', body: jsonEncode(data));
   }
 
+  static Future<String> getFromFirebase() async{
+    http.Response response = await http.get('https://learning-project-a9400-default-rtdb.firebaseio.com/persons.json');
+    return response.body;
+  }
 
 
 }

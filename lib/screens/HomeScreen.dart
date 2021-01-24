@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lekha_jokha/models/person.dart';
 import 'package:lekha_jokha/providers/data_provider.dart';
 import 'package:provider/provider.dart';
 
@@ -15,7 +16,6 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
 
   var name;
-  var vehicle;
   var age;
 
   @override
@@ -45,24 +45,32 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ),
           FlatButton(onPressed: () {
-             Provider.of<DataProvider>(context, listen: false).uploadData(name, age);
+             Provider.of<DataProvider>(context, listen: false).uploadData(Person(name: name, age: age));
           },
               child: Text('Submit')),
 
-          TextField(
-            onChanged: (text) {
-              vehicle = text;
-            },
-            decoration: InputDecoration(
-              border: InputBorder.none,
-              hintText: 'Vehicles',
+          FlatButton(onPressed: () async{
+            await Provider.of<DataProvider>(context, listen: false).getData();
+          }, child: Text('get data')),
+
+          Expanded(
+            child: Consumer<DataProvider>(
+              builder: (BuildContext context, data, Widget child) {
+                return data.listPersons.length == 0 ? Text('No Data') : Container(
+                  child: Padding(padding: EdgeInsets.all(8),
+                    child: ListView.builder(
+                      itemBuilder: (ctx, i) => ListTile(
+                        title: Text(data.listPersons[i].name),
+                        subtitle: Text(data.listPersons[i].age),
+                      ),
+                      itemCount: data.listPersons.length,
+                    ),
+                  ),
+                );
+              },
+
             ),
           ),
-          FlatButton(onPressed: () {
-            Provider.of<DataProvider>(context, listen: false).uploadData2(vehicle);
-          },
-              child: Text('Add')),
-
 
         ],
       ),
