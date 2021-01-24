@@ -15,8 +15,11 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
 
-  var name;
-  var age;
+  final nameController = TextEditingController();
+  final ageController = TextEditingController();
+  var selectedId;
+
+  bool isEditing = false;
 
   @override
   Widget build(BuildContext context) {
@@ -27,27 +30,30 @@ class _HomeScreenState extends State<HomeScreen> {
       body: Column(
         children: [
           TextField(
-            onChanged: (text) {
-              name = text;
-            },
+            controller: nameController,
             decoration: InputDecoration(
               border: InputBorder.none,
               hintText: 'Name',
             ),
+
           ),
           TextField(
-            onChanged: (text) {
-              age = text;
-            },
+            controller: ageController,
             decoration: InputDecoration(
               border: InputBorder.none,
               hintText: 'age',
             ),
           ),
-          FlatButton(onPressed: () {
-             Provider.of<DataProvider>(context, listen: false).uploadData(Person(name: name, age: age));
+          FlatButton(onPressed: () async{
+            if(isEditing)
+              await Provider.of<DataProvider>(context, listen: false).updateData(Person(name: nameController.text, age: ageController.text, id: selectedId));
+            else
+              await Provider.of<DataProvider>(context, listen: false).uploadData(Person(name: nameController.text, age: ageController.text));
+            nameController.text = '';
+            ageController.text = '';
+            isEditing = false;
           },
-              child: Text('Submit')),
+              child: Text(isEditing ? 'update' : 'add')),
 
           FlatButton(onPressed: () async{
             await Provider.of<DataProvider>(context, listen: false).getData();
@@ -62,6 +68,14 @@ class _HomeScreenState extends State<HomeScreen> {
                       itemBuilder: (ctx, i) => ListTile(
                         title: Text(data.listPersons[i].name),
                         subtitle: Text(data.listPersons[i].age),
+                        trailing: IconButton(icon: Icon(Icons.edit), onPressed: () {
+                          setState(() {
+                            selectedId = data.listPersons[i].id;
+                            nameController.text = data.listPersons[i].name;
+                            ageController.text = data.listPersons[i].age;
+                            isEditing = true;
+                          });
+                        },),
                       ),
                       itemCount: data.listPersons.length,
                     ),

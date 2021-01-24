@@ -8,8 +8,8 @@ class DataProvider with ChangeNotifier{
   
   List<Person> listPersons = [];
   
-  void uploadData(Person person) {
-    API.uploadToFirebase('persons', {'name': person.name, 'age': person.age});
+  Future<void> uploadData(Person person) async{
+   await API.uploadToFirebase('persons', {'name': person.name, 'age': person.age});
   }
 
   Future<void> getData() async{
@@ -26,4 +26,7 @@ class DataProvider with ChangeNotifier{
     notifyListeners();
   }
 
+  Future<void> updateData(Person person) async{
+    await API.updateOnFirebase(person.id, {'name': person.name, 'age': person.age});
+  }
 }

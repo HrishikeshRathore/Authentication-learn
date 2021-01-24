@@ -12,5 +12,8 @@ class API {
     return response.body;
   }
 
+  static Future<void> updateOnFirebase(String id, Map<String, dynamic> updatedData) async{
+    await http.put('https://learning-project-a9400-default-rtdb.firebaseio.com/persons/$id.json', body: jsonEncode(updatedData));
+  }
 
 }
