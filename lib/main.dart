@@ -19,10 +19,9 @@ class MyApp extends StatelessWidget {
           title: Text('Check'),
         ),
         body: Center(
-          child: Text('Checking....'),
+          child: Text('Test'),
         ),
       ),
     );
   }
 }
-
