@@ -21,6 +21,10 @@ class _HomeScreenState extends State<HomeScreen> {
 
   bool isEditing = false;
 
+  Future<void> getData() async{
+    await Provider.of<DataProvider>(context, listen: false).getData();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -52,6 +56,7 @@ class _HomeScreenState extends State<HomeScreen> {
             nameController.text = '';
             ageController.text = '';
             isEditing = false;
+            await getData();
           },
               child: Text(isEditing ? 'update' : 'add')),
 
@@ -68,14 +73,19 @@ class _HomeScreenState extends State<HomeScreen> {
                       itemBuilder: (ctx, i) => ListTile(
                         title: Text(data.listPersons[i].name),
                         subtitle: Text(data.listPersons[i].age),
-                        trailing: IconButton(icon: Icon(Icons.edit), onPressed: () {
-                          setState(() {
-                            selectedId = data.listPersons[i].id;
-                            nameController.text = data.listPersons[i].name;
-                            ageController.text = data.listPersons[i].age;
-                            isEditing = true;
-                          });
+                        trailing: IconButton(icon: Icon(Icons.delete), onPressed: () async{
+                          selectedId = data.listPersons[i].id;
+                          await Provider.of<DataProvider>(context, listen: false).deleteData(selectedId);
+                          await getData();
                         },),
+                        leading: IconButton(icon: Icon(Icons.edit), onPressed: () {
+                      setState(() {
+                        selectedId = data.listPersons[i].id;
+                        nameController.text = data.listPersons[i].name;
+                        ageController.text = data.listPersons[i].age;
+                        isEditing = true;
+                      });
+                    },),
                       ),
                       itemCount: data.listPersons.length,
                     ),

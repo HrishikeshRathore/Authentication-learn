@@ -17,6 +17,12 @@ class DataProvider with ChangeNotifier{
     print(jsonDecode(personsData));
     var data = jsonDecode(personsData) as Map;
     List<Person> tempList =[];
+    if(data == null){
+      listPersons = [];
+      notifyListeners();
+      return;
+    }
+
     data.forEach((key, value) {
       tempList.add(
         Person(name: value['name'], age: value['age'],id: key)
@@ -28,5 +34,9 @@ class DataProvider with ChangeNotifier{
 
   Future<void> updateData(Person person) async{
     await API.updateOnFirebase(person.id, {'name': person.name, 'age': person.age});
+  }
+
+  Future<void> deleteData(String id) async{
+    await API.deleteOnFirebase(id);
   }
 }

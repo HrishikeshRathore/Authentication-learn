@@ -16,4 +16,8 @@ class API {
     await http.put('https://learning-project-a9400-default-rtdb.firebaseio.com/persons/$id.json', body: jsonEncode(updatedData));
   }
 
+  static Future<void> deleteOnFirebase(String id) async{
+    await http.delete('https://learning-project-a9400-default-rtdb.firebaseio.com/persons/$id.json');
+  }
+
 }
